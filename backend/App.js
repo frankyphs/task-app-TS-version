@@ -36,14 +36,7 @@ app.post(`/tasks`, async (req, res) => {
 });
 
 app.get("/tasks", async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
-
-  const results = tasks.slice(startIndex, endIndex);
-
+  const results = tasks;
   return res.json(results);
 });
 

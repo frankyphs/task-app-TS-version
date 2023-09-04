@@ -2,11 +2,12 @@ import React from "react";
 import { useState, useContext } from "react";
 // import { useTaskContext } from "./TaskContext";
 import TaskContext from "../store/task-context";
+import { useNavigate } from "react-router-dom";
 
 const baseUrl = "http://localhost:3000";
-const YourComponent = () => {
-  const { dispatch } = useContext(TaskContext);
-  //   const { taskState, dispatch } = useTaskContext();
+const AddTaskForm = () => {
+  const { tasks } = useContext(TaskContext);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     judul: "",
     deskripsi: "",
@@ -30,11 +31,7 @@ const YourComponent = () => {
       if (!response.ok) {
         throw { name: "error", data: await response.json() };
       }
-
-      // Setelah berhasil menambahkan tugas, kirim tindakan "ADD" ke reducer
-      dispatch({ type: "ADD", task: payload });
-
-      // Selanjutnya, Anda dapat memanggil fetchTasks atau tindakan lain jika diperlukan
+      navigate("/");
     } catch (err) {
       console.log(err);
     }
@@ -51,6 +48,7 @@ const YourComponent = () => {
   return (
     <div>
       {/* Render komponen Anda dengan menggunakan state dari taskState */}
+      <p>{JSON.stringify(tasks)}</p>
       <p>ini Add Task Form</p>
       <label htmlFor="judul">Judul:</label>
       <input
@@ -80,4 +78,4 @@ const YourComponent = () => {
   );
 };
 
-export default YourComponent;
+export default AddTaskForm;
