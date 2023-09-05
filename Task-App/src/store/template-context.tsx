@@ -1,8 +1,16 @@
+/* eslint-disable */
 import React from "react";
-
-const TemplateContext = React.createContext({
+import { Action } from "./TaskProvider";
+import { FormElement } from "../components/CustomizeForm";
+interface ITemplateContext {
+  // templates: object[][];
+  templates: FormElement[][];
+  // dispatchTemplate: React.Dispatch<Action<object[][]>>;
+  dispatchTemplate: React.Dispatch<Action<FormElement[][]>>;
+}
+const TemplateContext = React.createContext<ITemplateContext>({
   templates: [],
-  dispatchTemplate: (action: any) => {}, // Tambahkan dispatch ke dalam context
+  dispatchTemplate: (props) => [], // Tambahkan dispatch ke dalam context
 });
 
 export default TemplateContext;

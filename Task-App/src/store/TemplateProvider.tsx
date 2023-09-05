@@ -1,29 +1,28 @@
 import { useReducer } from "react";
 import TemplateContext from "./template-context";
+import { Action, ProviderProps } from "./TaskProvider";
 
-const defaultTemplateState = {
-  templates: [],
-};
-
-const templateReducer = (state: any, action: any) => {
+const defaultTemplateState: FormElement[][] = [];
+import { FormElement } from "../components/CustomizeForm";
+const templateReducer = (
+  state: FormElement[][],
+  action: Action<FormElement[][]>
+): FormElement[][] => {
   if (action.type === "GET") {
-    return {
-      ...state,
-      templates: action.data,
-    };
+    return action.data;
   }
 
   return defaultTemplateState;
 };
 
-const TemplateProvider = (props: any) => {
+const TemplateProvider = (props: ProviderProps) => {
   const [templateState, dispatchTemplateAction] = useReducer(
     templateReducer,
     defaultTemplateState
   );
 
   const templateContext = {
-    templates: templateState.templates,
+    templates: templateState,
     dispatchTemplate: dispatchTemplateAction,
   };
 

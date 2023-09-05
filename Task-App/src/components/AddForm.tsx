@@ -8,19 +8,22 @@ import {
   SpinButton,
 } from "@fluentui/react";
 
+import { FormElement } from "./CustomizeForm";
+
 interface FormValues {
-  [key: number]: string | number | Date;
+  [key: number | string]: string | undefined;
 }
 
-interface FormElement {
-  id: string;
-  type: string;
-  name: string;
-}
+// export interface FormElement {
+//   id: string;
+//   type: string;
+//   name: string;
+// }
 
 interface AddFormProps {
   onSave: (formValues: FormValues) => void;
   template: FormElement[][];
+  // template: object;
 }
 
 const AddFormRevision: React.FC<AddFormProps> = ({ onSave, template }) => {
@@ -85,8 +88,18 @@ const AddFormRevision: React.FC<AddFormProps> = ({ onSave, template }) => {
                     )}
                     {el.type === "DatePicker" && (
                       <DatePicker
-                        value={formValues[el.id] || null}
-                        onSelectDate={(date) => handleFormChange(el.id, date)}
+                        value={
+                          formValues[el.id]
+                            ? new Date(formValues[el.id] as string)
+                            : undefined
+                        }
+                        onSelectDate={(date) => {
+                          if (date instanceof Date) {
+                            handleFormChange(el.id, date.toISOString());
+                          } else {
+                            handleFormChange(el.id, undefined);
+                          }
+                        }}
                         placeholder="Enter Date"
                         label={el.name}
                       />

@@ -1,8 +1,16 @@
-import React from "react";
+/* eslint-disable */
 
-const TaskContext = React.createContext({
+import React from "react";
+import { Action } from "./TaskProvider";
+
+interface ITaskContext {
+  tasks: object[];
+  dispatchTask: React.Dispatch<Action<object[]>>;
+}
+
+const TaskContext = React.createContext<ITaskContext>({
   tasks: [],
-  dispatchTask: (action: any) => {}, // Tambahkan dispatch ke dalam context
+  dispatchTask: (props) => [], // Tambahkan dispatch ke dalam context
 });
 
 export default TaskContext;

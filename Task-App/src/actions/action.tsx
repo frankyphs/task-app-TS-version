@@ -4,6 +4,7 @@
 
 // const baseUrl = "http://localhost:3000";
 
+// //This for fetch Task data ==> dipanggil di TaskTable.tsx
 // export const FetchDataTask = async () => {
 //   const { dispatchTask } = useContext(TaskContext);
 //   try {
@@ -19,6 +20,7 @@
 //   }
 // };
 
+// //This for fetch Template data ==> dipanggil di TaskTable.tsx
 // export const FetchDataTemplate = async () => {
 //   const { dispatchTemplate } = useContext(TemplateContext);
 //   try {
@@ -34,6 +36,7 @@
 //   }
 // };
 
+// //This for deleting task => dipanggil di TaskTable.tsx
 // export const RemoveTask = async (id: number) => {
 //   const { dispatchTask } = useContext(TaskContext);
 //   try {
@@ -66,6 +69,7 @@
 //   [key: number]: string | number | Date;
 // }
 
+// //This for adding task ==> dipanggil di Data.tsx
 // export const AddTask = async (payload: FormValues) => {
 //   try {
 //     const opt = {
@@ -86,31 +90,32 @@
 //   }
 // };
 
-// export const AddTemplate = async (payload: any) => {
-//   const { dispatchTemplate } = useContext(TemplateContext);
-//   try {
-//     const opt = {
-//       method: "post",
-//       body: JSON.stringify(payload),
-//       headers: {
-//         "Content-type": "application/json; charset=UTF-8",
-//       },
-//     };
+// //This for saving new template ==> dipanggil di CustomizeForm.tsx
+// // export const AddTemplate = async (payload: any) => {
+// //   const { dispatchTemplate } = useContext(TemplateContext);
+// //   try {
+// //     const opt = {
+// //       method: "post",
+// //       body: JSON.stringify(payload),
+// //       headers: {
+// //         "Content-type": "application/json; charset=UTF-8",
+// //       },
+// //     };
 
-//     const response = await fetch(`${baseUrl}/templates`, opt);
-//     if (!response.ok) {
-//       throw { name: "error", data: await response.json() };
-//     }
-//     console.log(payload, "Ini payload");
+// //     const response = await fetch(`${baseUrl}/templates`, opt);
+// //     if (!response.ok) {
+// //       throw { name: "error", data: await response.json() };
+// //     }
+// //     console.log(payload, "Ini payload");
 
-//     const updatedResponse = await fetch(`${baseUrl}/templates`);
-//     if (!updatedResponse.ok) {
-//       throw { name: "error" };
-//     }
-//     const updatedData = await updatedResponse.json();
+// //     const updatedResponse = await fetch(`${baseUrl}/templates`);
+// //     if (!updatedResponse.ok) {
+// //       throw { name: "error" };
+// //     }
+// //     const updatedData = await updatedResponse.json();
 
-//     dispatchTemplate({ type: "GET", data: updatedData });
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
+// //     dispatchTemplate({ type: "GET", data: updatedData });
+// //   } catch (err) {
+// //     console.log(err);
+// //   }
+// // };

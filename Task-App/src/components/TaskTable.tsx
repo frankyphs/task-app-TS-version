@@ -14,6 +14,7 @@ import {
   DetailsList,
   DetailsListLayoutMode,
   IColumn,
+  // TextField,
 } from "@fluentui/react";
 
 const Table: React.FC = () => {
@@ -24,7 +25,33 @@ const Table: React.FC = () => {
 
   const baseUrl = "http://localhost:3000";
 
-  // useEffect
+  // function EditText(id: number) {
+  //   const [text, setText] = useState("");
+  //   const [isEditing, setIsEditing] = useState(false);
+
+  //   const handleDoubleClick = () => {
+  //     setIsEditing(true);
+  //   };
+
+  //   const handleChange = (e: any, newText: string) => {
+  //     setText(newText);
+  //   };
+
+  //   const handleBlur = () => {
+  //     setIsEditing(false);
+  //   };
+
+  //   return (
+  //     <div>
+  //       {isEditing ? (
+  //         <TextField value={text} onChange={handleChange} onBlur={handleBlur} />
+  //       ) : (
+  //         <div onDoubleClick={handleDoubleClick}>{text}</div>
+  //       )}
+  //     </div>
+  //   );
+  // }
+
   useEffect(() => {
     const fetchDataTask = async () => {
       try {
@@ -32,7 +59,7 @@ const Table: React.FC = () => {
         if (!response.ok) {
           throw { name: "error" };
         }
-        const jsonData = await response.json();
+        const jsonData: object[] = await response.json();
 
         dispatchTask({ type: "GET", data: jsonData });
       } catch (err) {
@@ -86,7 +113,6 @@ const Table: React.FC = () => {
     }
   };
 
-  // Type Task
   type Task = {
     id: number;
     [key: string]: string | number | Date;
@@ -95,17 +121,6 @@ const Table: React.FC = () => {
   const [deletingTask, setDeletingTask] = useState<Task | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  //   const [formData, setFormData] = useState({
-  //     title: "",
-  //     description: "",
-  //   });
-
-  const [error, setError] = useState({
-    show: false,
-    message: "",
-  });
-
-  // Delete
   const handleDeleteClick = (task: any) => {
     setDeletingTask(task);
     setIsDeleteModalOpen(true);
@@ -134,22 +149,20 @@ const Table: React.FC = () => {
         minWidth: 50,
         maxWidth: 50,
         isResizable: true,
-        // className: "kepala-tabel",
-        onRender: (item, index: number) => index + 1,
+        onRender: (__, index: number) => index + 1,
         styles: {
           cellName: {
             fontSize: "20px",
           },
         },
       },
-      ...templates.flatMap((row) =>
-        row.map((field) => ({
+      ...templates.flatMap((row: any) =>
+        row.map((field: any) => ({
           key: field.id,
           name: field.name,
           fieldName: field.id,
           minWidth: 100,
           maxWidth: 250,
-          // className: "kepala-tabel",
           isResizable: true,
           styles: {
             cellName: {
@@ -185,8 +198,6 @@ const Table: React.FC = () => {
 
   return (
     <>
-      <h1>template</h1>
-      {JSON.stringify(templates)}
       <h1>List of My Tasks</h1>
       {JSON.stringify(tasks)}
       <div className="table-container">

@@ -1,11 +1,35 @@
 import { useReducer } from "react";
 
 import TaskContext from "./task-context";
+// interface Task {
+//   [key:number]: string
+// }
 const defaultTaskState = {
   tasks: [],
 };
 
-const taskReducer = (state: any, action: any) => {
+export interface TaskState {
+  tasks: object[];
+}
+
+export interface Task {
+  [key: string]: string | number | Date;
+  id: number;
+}
+
+export interface Action<T> {
+  type: string;
+  data: T;
+}
+
+export interface ProviderProps {
+  children: React.ReactNode;
+}
+
+const taskReducer: React.Reducer<TaskState, Action<object[]>> = (
+  state: TaskState,
+  action: Action<object[]>
+): TaskState => {
   if (action.type === "GET") {
     return {
       ...state,
@@ -16,7 +40,7 @@ const taskReducer = (state: any, action: any) => {
   return defaultTaskState;
 };
 
-const TaskProvider = (props: any) => {
+const TaskProvider: React.FC<ProviderProps> = ({ children }) => {
   const [taskState, dispatchTaskAction] = useReducer(
     taskReducer,
     defaultTaskState
@@ -28,9 +52,7 @@ const TaskProvider = (props: any) => {
   };
 
   return (
-    <TaskContext.Provider value={taskContext}>
-      {props.children}
-    </TaskContext.Provider>
+    <TaskContext.Provider value={taskContext}>{children}</TaskContext.Provider>
   );
 };
 
