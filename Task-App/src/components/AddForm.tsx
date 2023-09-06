@@ -8,23 +8,11 @@ import {
   SpinButton,
 } from "@fluentui/react";
 
-import { FormElement } from "./CustomizeForm";
-
-import { FormValues } from "../interface/interface";
-// interface FormValues {
-//   [key: number | string]: string | undefined;
-// }
-
-// export interface FormElement {
-//   id: string;
-//   type: string;
-//   name: string;
-// }
+import { FormValues, FormElement } from "../interface/interface";
 
 interface AddFormProps {
   onSave: (formValues: FormValues) => void;
   template: FormElement[][];
-  // template: object;
 }
 
 const AddFormRevision: React.FC<AddFormProps> = ({ onSave, template }) => {

@@ -25,6 +25,8 @@ export interface DatePickerType{
     class?:string;
 }
 
+export type FormElement = TextFieldType | SpinButtonType | DatePickerType;
+
 export interface Task {
     id:number;
     [key:string]:string|number|Date
@@ -39,7 +41,12 @@ type:string;
 data : T
 }
 
-
 export interface ProviderProps {
     children: React.ReactNode;
+  }
+
+
+  export interface ErrorMessage {
+    show:boolean;
+    message:string
   }

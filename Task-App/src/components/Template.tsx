@@ -1,42 +1,36 @@
 import { useContext } from "react";
-import CustomizeRevise, { FormElement } from "./CustomizeForm";
+import axios, { AxiosResponse } from "axios";
+import CustomizeRevise from "./CustomizeForm";
 import TemplateContext from "../store/template-context";
 import { useNavigate } from "react-router-dom";
-
+import { FormElement } from "../interface/interface";
 const baseUrl = "http://localhost:3000";
 
 const Template = () => {
-  const { dispatchTemplate } = useContext(TemplateContext);
   const { templates } = useContext(TemplateContext);
   const navigate = useNavigate();
 
   console.log(templates, "Ini templates dari useContext");
+
   const addTemplate = async (payload: FormElement[][]) => {
     try {
       const opt = {
         method: "post",
-        body: JSON.stringify(payload),
+        data: payload,
         headers: {
           "Content-type": "application/json; charset=UTF-8",
         },
       };
 
-      const response = await fetch(`${baseUrl}/templates`, opt);
-      if (!response.ok) {
-        throw { name: "error", data: await response.json() };
+      const response: AxiosResponse<FormElement[][]> = await axios(
+        `${baseUrl}/templates`,
+        opt
+      );
+      if (response.status !== 201) {
+        throw new Error("fail to save template");
       }
-      console.log(payload, "Ini payload");
-
-      const updatedResponse = await fetch(`${baseUrl}/templates`);
-      if (!updatedResponse.ok) {
-        throw { name: "error" };
-      }
-      const updatedData = await updatedResponse.json();
-
-      dispatchTemplate({ type: "GET", data: updatedData });
-      //   navigate("/");
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 

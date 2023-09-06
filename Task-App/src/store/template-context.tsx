@@ -1,16 +1,14 @@
 /* eslint-disable */
 import React from "react";
 import { Action } from "../interface/interface";
-import { FormElement } from "../components/CustomizeForm";
+import { FormElement } from "../interface/interface";
 interface ITemplateContext {
-  // templates: object[][];
   templates: FormElement[][];
-  // dispatchTemplate: React.Dispatch<Action<object[][]>>;
   dispatchTemplate: React.Dispatch<Action<FormElement[][]>>;
 }
 const TemplateContext = React.createContext<ITemplateContext>({
   templates: [],
-  dispatchTemplate: (props) => [], // Tambahkan dispatch ke dalam context
+  dispatchTemplate: () => [],
 });
 
 export default TemplateContext;

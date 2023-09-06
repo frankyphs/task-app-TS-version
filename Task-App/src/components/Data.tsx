@@ -1,63 +1,73 @@
 /* eslint-disable */
 import { useContext, useEffect } from "react";
 import AddForm from "./AddForm";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import TemplateContext from "../store/template-context";
-const baseUrl = "http://localhost:3000";
+import axios, { AxiosResponse } from "axios";
+import { FormElement, Task } from "../interface/interface";
+import TaskContext from "../store/task-context";
 
+const baseUrl = "http://localhost:3000";
 function Data() {
   const navigate = useNavigate();
   const { templates } = useContext(TemplateContext);
   const { dispatchTemplate } = useContext(TemplateContext);
+  const { dispatchTask } = useContext(TaskContext);
 
-  if (templates === undefined) {
-    return (
-      <div>
-        <NavLink to="/customize-form" style={{ fontSize: "24px" }}>
-          Customize the form
-          <i className="fas fa-cog"></i>
-        </NavLink>
-      </div>
-    );
-  }
-
-  const addTask = async (payload: any) => {
+  const fetchDataTask = async (): Promise<void> => {
     try {
-      const opt = {
-        method: "post",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      };
-
-      const response = await fetch(`${baseUrl}/tasks`, opt);
-      if (!response.ok) {
-        throw { name: "error", data: await response.json() };
+      const response: AxiosResponse<Task[]> = await axios(`${baseUrl}/tasks`);
+      if (response.status !== 200) {
+        throw new Error("Error fetching data");
       }
-      navigate("/");
+      const jsonData: Task[] = await response.data;
+      dispatchTask({ type: "GET", data: jsonData });
     } catch (err) {
       console.log(err);
     }
   };
 
-  useEffect(() => {
-    const fetchDataTemplate = async () => {
-      try {
-        const response = await fetch(`${baseUrl}/templates`);
-        if (!response.ok) {
-          throw { name: "error" };
-        }
-        const jsonData = await response.json();
-
-        dispatchTemplate({ type: "GET", data: jsonData });
-      } catch (err) {
-        console.log(err);
+  const fetchDataTemplate = async (): Promise<void> => {
+    try {
+      const response: AxiosResponse<FormElement[][]> = await axios(
+        `${baseUrl}/templates`
+      );
+      if (response.status !== 200) {
+        throw new Error("Error fetching template");
       }
-    };
+      const jsonData: FormElement[][] = await response.data;
+      dispatchTemplate({ type: "GET", data: jsonData });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  const addTask = async (payload: any): Promise<void> => {
+    try {
+      const opt = {
+        method: "post",
+        data: payload,
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      };
+      const response: AxiosResponse<Task[][]> = await axios(
+        `${baseUrl}/tasks`,
+        opt
+      );
+      if (response.status !== 201) {
+        throw new Error("Gagal Add Task");
+      }
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
     fetchDataTemplate();
-  }, [dispatchTemplate]);
+    fetchDataTask();
+  }, []);
 
   return (
     <div>

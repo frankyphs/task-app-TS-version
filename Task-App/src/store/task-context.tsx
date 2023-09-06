@@ -10,7 +10,7 @@ interface ITaskContext {
 
 const TaskContext = React.createContext<ITaskContext>({
   tasks: [],
-  dispatchTask: (props) => [], // Tambahkan dispatch ke dalam context
+  dispatchTask: () => [], // Tambahkan dispatch ke dalam context agar bisa dipakai oleh child
 });
 
 export default TaskContext;

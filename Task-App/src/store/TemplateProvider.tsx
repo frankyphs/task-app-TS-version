@@ -3,19 +3,20 @@ import TemplateContext from "./template-context";
 import { Action, ProviderProps } from "../interface/interface";
 
 const defaultTemplateState: FormElement[][] = [];
-import { FormElement } from "../components/CustomizeForm";
+import { FormElement } from "../interface/interface";
 const templateReducer = (
   state: FormElement[][],
   action: Action<FormElement[][]>
 ): FormElement[][] => {
   if (action.type === "GET") {
+    console.log(action.data, "Ini action");
     return action.data;
   }
 
   return defaultTemplateState;
 };
 
-const TemplateProvider = (props: ProviderProps) => {
+const TemplateProvider = ({ children }: ProviderProps) => {
   const [templateState, dispatchTemplateAction] = useReducer(
     templateReducer,
     defaultTemplateState
@@ -28,7 +29,7 @@ const TemplateProvider = (props: ProviderProps) => {
 
   return (
     <TemplateContext.Provider value={templateContext}>
-      {props.children}
+      {children}
     </TemplateContext.Provider>
   );
 };

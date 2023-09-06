@@ -1,9 +1,10 @@
 /* eslint-disable */
 import React from "react";
-
+import axios, { AxiosResponse } from "axios";
 import { useState, useEffect, useContext } from "react";
 import TaskContext from "../store/task-context";
 import TemplateContext from "../store/template-context";
+import { FormElement } from "../interface/interface";
 
 import {
   DefaultButton,
@@ -14,7 +15,6 @@ import {
   DetailsList,
   DetailsListLayoutMode,
   IColumn,
-  // TextField,
 } from "@fluentui/react";
 
 import { Task } from "../interface/interface";
@@ -27,68 +27,41 @@ const Table: React.FC = () => {
 
   const baseUrl = "http://localhost:3000";
 
-  // function EditText(id: number) {
-  //   const [text, setText] = useState("");
-  //   const [isEditing, setIsEditing] = useState(false);
+  const fetchDataTask = async (): Promise<void> => {
+    try {
+      const response: AxiosResponse<Task[]> = await axios(`${baseUrl}/tasks`);
+      if (response.status !== 200) {
+        throw new Error("Error fetching data");
+      }
+      const jsonData: Task[] = await response.data;
+      dispatchTask({ type: "GET", data: jsonData });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  //   const handleDoubleClick = () => {
-  //     setIsEditing(true);
-  //   };
-
-  //   const handleChange = (e: any, newText: string) => {
-  //     setText(newText);
-  //   };
-
-  //   const handleBlur = () => {
-  //     setIsEditing(false);
-  //   };
-
-  //   return (
-  //     <div>
-  //       {isEditing ? (
-  //         <TextField value={text} onChange={handleChange} onBlur={handleBlur} />
-  //       ) : (
-  //         <div onDoubleClick={handleDoubleClick}>{text}</div>
-  //       )}
-  //     </div>
-  //   );
-  // }
+  const fetchDataTemplate = async (): Promise<void> => {
+    try {
+      const response: AxiosResponse<FormElement[][]> = await axios.get(
+        `${baseUrl}/templates`
+      );
+      if (response.status !== 200) {
+        throw new Error("Error fethcing template");
+      }
+      const jsonData: FormElement[][] = await response.data;
+      dispatchTemplate({ type: "GET", data: jsonData });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const fetchDataTask = async () => {
-      try {
-        const response = await fetch(`${baseUrl}/tasks`);
-        if (!response.ok) {
-          throw { name: "error" };
-        }
-        const jsonData: object[] = await response.json();
-
-        dispatchTask({ type: "GET", data: jsonData });
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    const fetchDataTemplate = async () => {
-      try {
-        const response = await fetch(`${baseUrl}/templates`);
-        if (!response.ok) {
-          throw { name: "error" };
-        }
-        const jsonData = await response.json();
-
-        dispatchTemplate({ type: "GET", data: jsonData });
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
     fetchDataTask();
     fetchDataTemplate();
-  }, [dispatchTask, dispatchTemplate]);
+  }, []);
 
   // logic delete task
-  const removeTask = async (id: number) => {
+  const deleteTask = async (id: number) => {
     try {
       const opt = {
         method: "delete",
@@ -96,32 +69,20 @@ const Table: React.FC = () => {
           "Content-type": "application/json; charset=UTF-8",
         },
       };
+      const response = await axios(`${baseUrl}/tasks/${id}`, opt);
 
-      const response = await fetch(`${baseUrl}/tasks/${id}`, opt);
-
-      if (!response.ok) {
-        throw { name: "error" };
+      if (response.status !== 200) {
+        throw new Error("Gagal delete task");
       }
 
-      const updatedResponse = await fetch(`${baseUrl}/tasks`);
-      if (!updatedResponse.ok) {
-        throw { name: "error" };
-      }
-      const updatedData = await updatedResponse.json();
-
-      dispatchTask({ type: "GET", data: updatedData });
+      fetchDataTask();
     } catch (error) {
       console.log(error);
     }
   };
 
-  // type Task = {
-  //   id: number;
-  //   [key: string]: string | number | Date;
-  // };
-
   const [deletingTask, setDeletingTask] = useState<Task | null>(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
   const handleDeleteClick = (task: any) => {
     setDeletingTask(task);
@@ -131,7 +92,7 @@ const Table: React.FC = () => {
 
   const handleDeleteConfirmation = () => {
     if (deletingTask) {
-      removeTask(deletingTask.id);
+      deleteTask(deletingTask.id);
       setIsDeleteModalOpen(false);
     }
   };
@@ -201,7 +162,7 @@ const Table: React.FC = () => {
   return (
     <>
       <h1>List of My Tasks</h1>
-      {JSON.stringify(tasks)}
+
       <div className="table-container">
         {deletingTask !== null && (
           <Dialog
