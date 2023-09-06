@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React from "react";
-import { Action } from "./TaskProvider";
+import { Action } from "../interface/interface";
 import { FormElement } from "../components/CustomizeForm";
 interface ITemplateContext {
   // templates: object[][];

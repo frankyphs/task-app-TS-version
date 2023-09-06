@@ -17,6 +17,8 @@ import {
   // TextField,
 } from "@fluentui/react";
 
+import { Task } from "../interface/interface";
+
 const Table: React.FC = () => {
   const { tasks } = useContext(TaskContext);
   const { templates } = useContext(TemplateContext);
@@ -113,10 +115,10 @@ const Table: React.FC = () => {
     }
   };
 
-  type Task = {
-    id: number;
-    [key: string]: string | number | Date;
-  };
+  // type Task = {
+  //   id: number;
+  //   [key: string]: string | number | Date;
+  // };
 
   const [deletingTask, setDeletingTask] = useState<Task | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

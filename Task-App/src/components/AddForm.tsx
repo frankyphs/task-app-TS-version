@@ -10,9 +10,10 @@ import {
 
 import { FormElement } from "./CustomizeForm";
 
-interface FormValues {
-  [key: number | string]: string | undefined;
-}
+import { FormValues } from "../interface/interface";
+// interface FormValues {
+//   [key: number | string]: string | undefined;
+// }
 
 // export interface FormElement {
 //   id: string;

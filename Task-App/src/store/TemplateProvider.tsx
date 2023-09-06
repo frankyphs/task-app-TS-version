@@ -1,6 +1,6 @@
 import { useReducer } from "react";
 import TemplateContext from "./template-context";
-import { Action, ProviderProps } from "./TaskProvider";
+import { Action, ProviderProps } from "../interface/interface";
 
 const defaultTemplateState: FormElement[][] = [];
 import { FormElement } from "../components/CustomizeForm";

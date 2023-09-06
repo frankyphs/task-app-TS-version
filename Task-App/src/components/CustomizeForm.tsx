@@ -515,30 +515,35 @@ import {
 
 import { useNavigate } from "react-router-dom";
 
-export interface TextField {
-  type: "TextField";
-  id: string;
-  name?: string;
-  class?: string;
-}
+import {
+  SpinButtonType,
+  TextFieldType,
+  DatePickerType,
+} from "../interface/interface";
+// export interface TextField {
+//   type: "TextField";
+//   id: string;
+//   name?: string;
+//   class?: string;
+// }
 
-export interface SpinButton {
-  type: "SpinButton";
-  id: string;
-  name?: string;
-  class?: string;
-}
+// export interface SpinButton {
+//   type: "SpinButton";
+//   id: string;
+//   name?: string;
+//   class?: string;
+// }
 
-export interface DatePicker {
-  type: "DatePicker";
-  id: string;
-  name?: string;
-  class?: string;
-}
+// export interface DatePicker {
+//   type: "DatePicker";
+//   id: string;
+//   name?: string;
+//   class?: string;
+// }
 
-export type FormElement = TextField | SpinButton | DatePicker;
+export type FormElement = TextFieldType | SpinButtonType | DatePickerType;
 
-type Component = TextField | DatePicker | SpinButton;
+type Component = FormElement;
 const COMPONENT: Component[] = [
   { type: "TextField", id: "11", class: "fas fa-font" },
   { type: "DatePicker", id: "12", class: "far fa-calendar-alt" },

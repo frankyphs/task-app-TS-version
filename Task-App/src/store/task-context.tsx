@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import React from "react";
-import { Action } from "./TaskProvider";
+import { Action } from "../interface/interface";
 
 interface ITaskContext {
   tasks: object[];
