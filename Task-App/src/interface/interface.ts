@@ -9,13 +9,21 @@ export interface TextFieldType {
     id:string;
     name?: string;
     class?: string;
+    data?: {
+        isMandatory?: boolean,
+        defaultValue?: string|Date|number|boolean
+    }
 }
 
 export interface SpinButtonType{
     type:"SpinButton";
     id:string;
     name?:string;
-    class?:string
+    class?:string;
+    data?:{
+        isMandatory?:boolean,
+        defaultValue?:string|boolean|number|Date
+    }
 }
 
 export interface DatePickerType{
@@ -23,6 +31,10 @@ export interface DatePickerType{
     id:string;
     name?:string;
     class?:string;
+    data?:{
+        isMandatory?:boolean,
+        defaultValue?:string|boolean|number|Date
+    }
 }
 
 export type FormElement = TextFieldType | SpinButtonType | DatePickerType;

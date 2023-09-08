@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-const Sidebar: React.FC = () => {
+const Sidebar: React.FC = (): JSX.Element => {
   return (
     <>
       <div className="sidebar-container">

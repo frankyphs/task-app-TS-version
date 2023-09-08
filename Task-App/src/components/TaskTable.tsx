@@ -5,6 +5,7 @@ import { useState, useEffect, useContext } from "react";
 import TaskContext from "../store/task-context";
 import TemplateContext from "../store/template-context";
 import { FormElement } from "../interface/interface";
+import { formattedDate } from "../helper/helper";
 
 import {
   DefaultButton,
@@ -19,7 +20,7 @@ import {
 
 import { Task } from "../interface/interface";
 
-const Table: React.FC = () => {
+const Table: React.FC = (): JSX.Element => {
   const { tasks } = useContext(TaskContext);
   const { templates } = useContext(TemplateContext);
   const { dispatchTask } = useContext(TaskContext);
@@ -61,7 +62,7 @@ const Table: React.FC = () => {
   }, []);
 
   // logic delete task
-  const deleteTask = async (id: number) => {
+  const deleteTask = async (id: number): Promise<void> => {
     try {
       const opt = {
         method: "delete",
@@ -132,6 +133,14 @@ const Table: React.FC = () => {
               fontSize: "20px",
             },
           },
+          onRender: (item: any) => {
+            if (field.type === "DatePicker") {
+              // Memformat nilai hanya jika jenisnya adalah "DatePicker"
+              return formattedDate(item[field.id]);
+            }
+            // Untuk jenis lain, tampilkan nilai asli
+            return item[field.id];
+          },
         }))
       ),
       {
@@ -162,7 +171,8 @@ const Table: React.FC = () => {
   return (
     <>
       <h1>List of My Tasks</h1>
-
+      {/* {JSON.stringify(tasks)} */}
+      {JSON.stringify(templates)}
       <div className="table-container">
         {deletingTask !== null && (
           <Dialog

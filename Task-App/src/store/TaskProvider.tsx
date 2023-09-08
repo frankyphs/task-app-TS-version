@@ -7,11 +7,11 @@ const defaultTaskState = {
 };
 
 const taskReducer: React.Reducer<TaskState, Action<object[]>> = (
-  state: TaskState,
+  state: TaskState = defaultTaskState,
   action: Action<object[]>
 ): TaskState => {
   if (action.type === "GET") {
-    console.log(action.data, "Ini action task");
+    // console.log(action.data, "Ini action taskkkkk");
     return {
       ...state,
       tasks: action.data,

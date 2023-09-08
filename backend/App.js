@@ -16,13 +16,40 @@ app.use(bodyParser.json());
 let tasks = [];
 let template = [
   [
-    { type: "TextField", id: "1", name: "Judul" },
-    { type: "TextField", id: "4", name: "Subjek" },
+    {
+      type: "TextField",
+      id: "1",
+      name: "Judul",
+      data: { isMandatory: true, defaultValue: "" },
+    },
+    {
+      type: "TextField",
+      id: "4",
+      name: "Subjek",
+      data: { isMandatory: true, defaultValue: "" },
+    },
   ],
-  [{ type: "SpinButton", id: "3", name: "Repetisi" }],
   [
-    { type: "DatePicker", id: "5", name: "Deadline" },
-    { type: "TextField", id: "6", name: "Deskripsi" },
+    {
+      type: "SpinButton",
+      id: "3",
+      name: "Repetisi",
+      data: { isMandatory: false, defaultValue: "" },
+    },
+  ],
+  [
+    {
+      type: "DatePicker",
+      id: "5",
+      name: "Deadline",
+      data: { isMandatory: false, defaultValue: "" },
+    },
+    {
+      type: "TextField",
+      id: "6",
+      name: "Deskripsi",
+      data: { isMandatory: false, defaultValue: "" },
+    },
   ],
 ];
 

@@ -15,7 +15,10 @@ interface AddFormProps {
   template: FormElement[][];
 }
 
-const AddFormRevision: React.FC<AddFormProps> = ({ onSave, template }) => {
+const AddFormRevision: React.FC<AddFormProps> = ({
+  onSave,
+  template,
+}): JSX.Element => {
   const [formValues, setFormValues] = useState<FormValues>({});
   const navigate = useNavigate();
 

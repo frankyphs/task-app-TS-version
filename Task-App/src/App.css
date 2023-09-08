@@ -114,6 +114,10 @@ td button{
 .fas{
   margin: 10px 10px;
 }
+.ms-Toggle-innerContainer{
+  display: flex;
+  align-items: center;
+}
 
 .button-delete:hover{
   background-color: red;

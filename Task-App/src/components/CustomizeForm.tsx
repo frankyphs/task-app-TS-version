@@ -3,19 +3,16 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { ErrorMessage } from "../interface/interface";
 
 import {
-  PrimaryButton,
   TextField,
   DatePicker,
   SpinButton,
-  Panel,
+  // Panel,
 } from "@fluentui/react";
 
-import { useNavigate } from "react-router-dom";
-
 import { FormElement } from "../interface/interface";
+import { filterArray, modifyArray } from "../helper/helper";
 
 type Component = FormElement;
 const COMPONENT: Component[] = [
@@ -23,57 +20,61 @@ const COMPONENT: Component[] = [
   { type: "DatePicker", id: "12", class: "far fa-calendar-alt" },
   { type: "SpinButton", id: "13", class: "fas fa-cog" },
 ];
-
-interface AddTemplateProps {
-  onSave: (formTemplate: FormElement[][]) => void;
-  templates: FormElement[][];
+export interface OpenPanelType {
+  nameComponent: string;
+  idComponent: string;
 }
 
-const CustomizeRevise: React.FC<AddTemplateProps> = ({ onSave, templates }) => {
+interface AddTemplateProps {
+  templates: FormElement[][];
+  onChange: (formTemplate: FormElement[][]) => void;
+  onClick: (name: string, id: any, isMandatory: boolean) => void;
+}
+
+const CustomizeRevise: React.FC<AddTemplateProps> = ({
+  templates,
+  onChange,
+  onClick,
+}): JSX.Element => {
   const [template, setTemplate] = useState<FormElement[][]>([]);
-  const navigate = useNavigate();
 
   const [custom, setCustom] = useState<Component[]>(COMPONENT);
 
   useState(false);
-  const [error, setError] = useState<ErrorMessage>({
-    show: false,
-    message: "",
-  });
 
-  const handlePanelSave = () => {
-    if (editingComponentName.trim() === "") {
-      setError({ show: true, message: "Please enter a valid name." });
-      return;
-    }
-    let targetGroupIndex = -1;
-    let targetComponentIndex = -1;
+  useEffect(() => {
+    setTemplate(modifyArray(templates));
+  }, []);
 
-    template.forEach((group, groupIndex) => {
-      group.forEach((component, componentIndex) => {
-        if (component.id == editingComponentID) {
-          targetGroupIndex = groupIndex;
-          targetComponentIndex = componentIndex;
-        }
-      });
-    });
+  //balikin lagi semua props dari parent
 
-    if (targetGroupIndex !== -1 && targetComponentIndex !== -1) {
-      const updatedTemplate = [...template];
-      updatedTemplate[targetGroupIndex][targetComponentIndex] = {
-        ...updatedTemplate[targetGroupIndex][targetComponentIndex],
-        name: editingComponentName,
-      };
+  const [showDeleteButton, setShowDeleteButton] = useState<boolean>(false);
+  const [deleteButtonIndex, setDeleteButtonIndex] = useState<number | null>(
+    null
+  );
+  const [deleteButtonRow, setDeleteButtonRow] = useState<number | null>(null);
+  //handle mouse enter
 
-      // Simpan perubahan ke state template
-      setTemplate(updatedTemplate);
-    }
-
-    setError({ show: false, message: "" });
-    setIsPanelOpen(false);
+  const handleMouseEnter = (row: number, index: number) => {
+    setDeleteButtonIndex(index);
+    setDeleteButtonRow(row);
+    setShowDeleteButton(true);
   };
+  //handle mouse leave
+  const handleMouseLeave = () => {
+    setShowDeleteButton(false);
+    setDeleteButtonIndex(null);
+    setDeleteButtonIndex(null);
+  };
+
+  //buat fungsi onClick untuk callback ke parent
+
+  const handleClick = (name: string, id: any, isMandatory: boolean) => {
+    onClick(name, id, isMandatory);
+  };
+
+  //handle delete component
   const handleDeleteComponent = (id: string | number) => {
-    // Mencari indeks dan grup komponen yang akan dihapus
     let targetGroupIndex = -1;
     let targetComponentIndex = -1;
 
@@ -92,81 +93,11 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({ onSave, templates }) => {
       updatedTemplate[targetGroupIndex].splice(targetComponentIndex, 1);
 
       // Simpan perubahan ke state template
-      setTemplate(modifyArray(filterArray(updatedTemplate)));
+      const arrayFilter = filterArray(updatedTemplate);
+      const hasilArray = modifyArray(arrayFilter);
+      setTemplate(hasilArray);
+      onChange(hasilArray);
     }
-  };
-
-  // Panel
-  const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
-  const [editingComponentName, setEditingComponentName] = useState<string>("");
-  const [editingComponentID, setEditingComponentID] = useState<string>("");
-
-  // handle array template
-  const filterArray = (array: FormElement[][]): FormElement[][] => {
-    const simpanArray = array.filter((el) => el.length !== 0);
-    return simpanArray;
-  };
-
-  const handleOpenPanel = (nameComponent: string, idComponent: string) => {
-    setIsPanelOpen(true);
-    setEditingComponentName(nameComponent);
-    setEditingComponentID(idComponent);
-  };
-
-  const handleSubmit = () => {
-    console.log(template, "Ini di hndleSubmit");
-    const arrayBaru = filterArray(template);
-
-    onSave(arrayBaru);
-    console.log(arrayBaru, "Ini form template");
-    navigate("/add-task");
-  };
-
-  const modifyArray = (array: FormElement[][]): FormElement[][] => {
-    let result: FormElement[][] = [];
-
-    result.push([]);
-
-    for (let i = 0; i < array.length; i++) {
-      result.push(array[i]);
-
-      if (i < array.length - 1) {
-        result.push([]);
-      }
-    }
-
-    result.push([]);
-
-    return result;
-  };
-
-  //nampilin tombol delete
-  const [showDeleteButton, setShowDeleteButton] = useState<boolean>(false);
-  const [deleteButtonIndex, setDeleteButtonIndex] = useState<number | null>(
-    null
-  );
-  const [deleteButtonRow, setDeleteButtonRow] = useState<number | null>(null);
-
-  const handleMouseEnter = (row: number, index: number) => {
-    setShowDeleteButton(true);
-    setDeleteButtonIndex(index);
-    setDeleteButtonRow(row);
-  };
-
-  const handleMouseLeave = () => {
-    setShowDeleteButton(false);
-    setDeleteButtonIndex(null);
-    setDeleteButtonRow(null);
-  };
-
-  useEffect(() => {
-    setTemplate(modifyArray(templates));
-  }, []);
-
-  const handleComponentNameChange = (
-    e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setEditingComponentName(e.currentTarget.value);
   };
 
   const handleDragandDrops = (results: any) => {
@@ -195,6 +126,7 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({ onSave, templates }) => {
         const newArray = filterArray(newTemplate);
         const finalArray = modifyArray(newArray);
         setTemplate(finalArray);
+        onChange(finalArray);
       } else {
         const reorderedStores = [...template];
         const storeSourceIndex = source.index;
@@ -205,6 +137,7 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({ onSave, templates }) => {
         const newArray = filterArray(reorderedStores);
         const finalArray = modifyArray(newArray);
         setTemplate(finalArray);
+        onChange(finalArray);
       }
     }
 
@@ -234,6 +167,7 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({ onSave, templates }) => {
       const newArray = filterArray(newTemplate);
       const finalArray = modifyArray(newArray);
       setTemplate(finalArray);
+      onChange(finalArray);
     }
 
     // ini logic untuk pemindahan komponen antar baris row
@@ -252,6 +186,7 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({ onSave, templates }) => {
       const newArray = filterArray(newTemplate);
       const finalArray = modifyArray(newArray);
       setTemplate(finalArray);
+      onChange(finalArray);
     }
     console.log(template, "Ini Template");
   };
@@ -356,10 +291,18 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({ onSave, templates }) => {
                                         >
                                           <div className="nama-form">
                                             <button
+                                              // onClick={() =>
+                                              //   handleOpenPanel(
+                                              //     el.name as string,
+                                              //     el.id
+                                              //   )
+                                              // }
                                               onClick={() =>
-                                                handleOpenPanel(
+                                                handleClick(
                                                   el.name as string,
-                                                  el.id
+                                                  el.id,
+                                                  el.data
+                                                    ?.isMandatory as boolean
                                                 )
                                               }
                                               className="tombol-edit"
@@ -413,33 +356,6 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({ onSave, templates }) => {
           </Droppable>
         </DragDropContext>
       </div>
-      <PrimaryButton
-        style={{ margin: "20px", fontSize: "20px" }}
-        className="add-form-button"
-        onClick={handleSubmit}
-      >
-        Save Template
-      </PrimaryButton>
-      <Panel
-        isOpen={isPanelOpen}
-        onDismiss={() => setIsPanelOpen(false)}
-        headerText="Edit Component" // Judul panel
-      >
-        {/* Isi panel */}
-        {error.show && (
-          <div style={{ fontSize: "18px", color: "red", textAlign: "center" }}>
-            {error.message}
-          </div>
-        )}
-        <TextField
-          label="Component Name"
-          value={editingComponentName}
-          // onChange={(e) => setEditingComponentName(e.target.value)}
-          onChange={handleComponentNameChange}
-        />
-        {/* Tambahan elemen-elemen pengeditan lainnya */}
-        <PrimaryButton text="Save" onClick={handlePanelSave} />
-      </Panel>
     </>
   );
 };

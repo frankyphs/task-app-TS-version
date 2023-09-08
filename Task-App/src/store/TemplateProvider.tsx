@@ -9,7 +9,7 @@ const templateReducer = (
   action: Action<FormElement[][]>
 ): FormElement[][] => {
   if (action.type === "GET") {
-    console.log(action.data, "Ini action");
+    // console.log(action.data, "Ini action");
     return action.data;
   }
 
