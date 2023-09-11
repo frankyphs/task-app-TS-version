@@ -28,7 +28,13 @@ export interface OpenPanelType {
 interface AddTemplateProps {
   templates: FormElement[][];
   onChange: (formTemplate: FormElement[][]) => void;
-  onClick: (name: string, id: any, isMandatory: boolean) => void;
+  onClick: (
+    name: string,
+    id: any,
+    isMandatory: boolean,
+    defaultValue: string | undefined,
+    type: string
+  ) => void;
 }
 
 const CustomizeRevise: React.FC<AddTemplateProps> = ({
@@ -69,8 +75,14 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
 
   //buat fungsi onClick untuk callback ke parent
 
-  const handleClick = (name: string, id: any, isMandatory: boolean) => {
-    onClick(name, id, isMandatory);
+  const handleClick = (
+    name: string,
+    id: any,
+    isMandatory: boolean,
+    defaultValue: string | undefined,
+    inputType: string
+  ) => {
+    onClick(name, id, isMandatory, defaultValue, inputType);
   };
 
   //handle delete component
@@ -301,8 +313,12 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
                                                 handleClick(
                                                   el.name as string,
                                                   el.id,
+
                                                   el.data
-                                                    ?.isMandatory as boolean
+                                                    ?.isMandatory as boolean,
+                                                  el.data
+                                                    ?.defaultValue as string,
+                                                  el.type
                                                 )
                                               }
                                               className="tombol-edit"

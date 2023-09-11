@@ -19,10 +19,25 @@ const AddFormRevision: React.FC<AddFormProps> = ({
   onSave,
   template,
 }): JSX.Element => {
-  const [formValues, setFormValues] = useState<FormValues>({});
+  //initialize formValue agar langsung bisa baca jika ada default value
+  // const initialValues = {[key: string]: any}={}
+  const initialValues: FormValues = {};
+  template.forEach((row) => {
+    row.forEach((field) => {
+      if (field.data?.defaultValue !== undefined) {
+        initialValues[field.id] = field.data.defaultValue;
+      }
+    });
+  });
+
+  const [formValues, setFormValues] = useState<FormValues>(initialValues);
+  // const [formValues, setFormValues] = useState<FormValues>({});
   const navigate = useNavigate();
 
-  const handleFormChange = (id: string, value: string | undefined) => {
+  const handleFormChange = (
+    id: string,
+    value: string | number | undefined | Date | boolean
+  ) => {
     setFormValues((prevValues) => ({
       ...prevValues,
       [id]: value,
@@ -34,7 +49,7 @@ const AddFormRevision: React.FC<AddFormProps> = ({
     message: "",
   });
 
-  const validateMandatoryField = (field: any) => {
+  const validateMandatoryField = (field: FormElement) => {
     if (field.data?.isMandatory) {
       const isEmpty = !formValues[field.id];
 
@@ -62,13 +77,20 @@ const AddFormRevision: React.FC<AddFormProps> = ({
   };
 
   useEffect(() => {
-    // Periksa apakah semua input yang wajib diisi sudah terisi
+    // console.log(formValues, "Ini form values di awal");
     const isAllMandatoryFieldsFilled = template.every((row) =>
       row.every((field) => {
         if (field.data?.isMandatory) {
-          return formValues[field.id] !== "";
+          if (formValues[field.id] !== "") {
+            return true;
+          } else if (field.data.defaultValue !== undefined) {
+            return true;
+          }
+
+          return false;
         }
-        return true; // Bypass field yang bukan mandatory
+
+        return true;
       })
     );
 
@@ -183,7 +205,12 @@ const AddFormRevision: React.FC<AddFormProps> = ({
                     {el.type === "TextField" && (
                       <TextField
                         placeholder="Enter text"
-                        value={formValues[el.id] || ""}
+                        // value={formValues[el.id] || ""}
+                        value={
+                          formValues[el.id] !== undefined
+                            ? formValues[el.id]
+                            : el.data?.defaultValue || ""
+                        }
                         onChange={(_, newValue) => {
                           handleFormChange(el.id, newValue);
                         }}
@@ -194,44 +221,14 @@ const AddFormRevision: React.FC<AddFormProps> = ({
                       />
                     )}
 
-                    {/* {el.type === "SpinButton" && (
-                      <SpinButton
-                        value={formValues[el.id] || ""}
-                        onChange={(_, newValue) => {
-                          handleFormChange(el.id, newValue);
-                        }}
-                        styles={{
-                          arrowButtonsContainer: {
-                            display: "flex",
-                            height: "100%",
-                            cursor: "default",
-                          },
-                        }}
-                        label={el.name}
-                      />
-                    )}
-                    {el.type === "DatePicker" && (
-                      <DatePicker
-                        value={
-                          formValues[el.id]
-                            ? new Date(formValues[el.id] as string)
-                            : undefined
-                        }
-                        onSelectDate={(date) => {
-                          if (date instanceof Date) {
-                            handleFormChange(el.id, date.toISOString());
-                          } else {
-                            handleFormChange(el.id, undefined);
-                          }
-                        }}
-                        placeholder="Enter Date"
-                        label={el.name}
-                      />
-                    )} */}
-
                     {el.type === "SpinButton" && (
                       <SpinButton
-                        value={formValues[el.id] || ""}
+                        // value={formValues[el.id] || ""}
+                        value={
+                          formValues[el.id] !== undefined
+                            ? formValues[el.id]
+                            : el.data?.defaultValue || 0
+                        }
                         onChange={(_, newValue) => {
                           handleFormChange(el.id, newValue);
                         }}

@@ -12,6 +12,8 @@ import {
   Panel,
   // ChoiceGroup,
   Toggle,
+  SpinButton,
+  DatePicker,
 } from "@fluentui/react";
 
 const Template: React.FC = (): JSX.Element => {
@@ -26,35 +28,81 @@ const Template: React.FC = (): JSX.Element => {
     message: "",
   });
 
+  const [errorDefaultValueSpin, setErrorDefaultValueSpin] =
+    useState<ErrorMessage>({
+      show: false,
+      message: "",
+    });
+
   // buat handle pas edit
   const handleComponentNameChange = (
     e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setEditingComponentName(e.currentTarget.value);
   };
+  // const handleComponentSpin = (id: number, value: any) => {
+  //   setEditingDefaultValue((prev) => {
+  //     return {
+  //       ...prev, // Menyalin semua nilai dari objek sebelumnya
+  //       [id]: value, // Menambah atau mengganti nilai pada indeks/id yang sesuai
+  //     };
+  //   });
+  // };
+
+  const handleSpinButtonChange = (value: string | undefined) => {
+    // const numericValue = parseFloat(value);
+    // if (!isNaN(numericValue)) {
+    //   setEditingDefaultValueSpin(numericValue);
+    // }
+    setEditingDefaultValueSpin(value);
+  };
+
+  const handleComponentDefaultChange = (
+    e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setEditingDefaultValue(e.currentTarget.value);
+  };
 
   //disini buat kode pindahin semua callback
   const [editingComponentName, setEditingComponentName] = useState<string>("");
+  // const [editingDefaultValueDeclared, setEditingDefaultValueDeclared] =
+  useState<string | undefined>("");
   const [editingComponentID, setEditingComponentID] = useState<string>("");
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
+  const [editingDefaultValue, setEditingDefaultValue] = useState<
+    string | undefined
+  >("");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+
+  const handleDateChange = (date: Date | null | undefined) => {
+    setSelectedDate(date || undefined); // Mengatur tanggal yang dipilih ke dalam state
+  };
+
+  const [editingDefaultValueSpin, setEditingDefaultValueSpin] = useState<
+    string | undefined
+  >(undefined);
+  const [inputTypeComponent, setInputTypeComponent] = useState<string>("");
 
   //kode buat buka panel
   const handleOpenPanel = (
     nameComponent: string,
     idComponent: string,
-    isMandatory: boolean
+    isMandatory: boolean,
+    defValue: string | undefined,
+    inputType: string
   ) => {
     setIsPanelOpen(true);
     setEditingComponentName(nameComponent);
     setEditingComponentID(idComponent);
     setIsMandatoryToggle(isMandatory);
+    setEditingDefaultValue(defValue);
+    // setEditingDefaultValueDeclared(defValue);
+    setInputTypeComponent(inputType);
+    setEditingDefaultValueSpin(defValue);
+    // setSelectedDate(defValue);
+    setSelectedDate(defValue ? new Date(defValue) : undefined);
   };
 
-  //kode buat handle is Mandatory
-  // const [isMandatory, setIsMandatory] = useState<string>("yes");
-  // const handleChangeMandatory = (ev: any, option: any) => {
-  //   setIsMandatory(option.key);
-  // };
   const [isMandatoryToggle, setIsMandatoryToggle] = useState<boolean>(false);
   const handleToggleChange = (
     _: React.MouseEvent<HTMLElement>,
@@ -64,17 +112,26 @@ const Template: React.FC = (): JSX.Element => {
     setIsMandatoryToggle(checked || false);
   };
 
-  // const options = [
-  //   { key: "yes", text: "Yes" },
-  //   { key: "no", text: "No" },
-  // ];
-
   //kode buat save edit panel
   const handlePanelSave = () => {
     if (editingComponentName.trim() === "") {
       setError({ show: true, message: "Please enter a valid name." });
       return;
     }
+
+    // console.log(editingDefaultValueSpin, "Ini default value spin");
+    // console.log(inputTypeComponent, "Ini input type component");
+    // console.log(!isNaN(editingDefaultValue), "ini harusnya true");
+
+    console.log(editingDefaultValueSpin, "Ini default value spin");
+    // if (inputTypeComponent === "SpinButton" && isNaN(editingDefaultValueSpin)) {
+    //   setErrorDefaultValueSpin({
+    //     show: true,
+    //     message: "Please enter number for spin button input",
+    //   });
+    //   return;
+    // }
+
     let targetGroupIndex = -1;
     let targetComponentIndex = -1;
 
@@ -93,12 +150,29 @@ const Template: React.FC = (): JSX.Element => {
       //   ...updatedTemplate[targetGroupIndex][targetComponentIndex],
       //   name: editingComponentName,
       // };
+      // updatedTemplate[targetGroupIndex][targetComponentIndex] = {
+      //   ...updatedTemplate[targetGroupIndex][targetComponentIndex],
+      //   name: editingComponentName,
+      //   data: {
+      //     ...updatedTemplate[targetGroupIndex][targetComponentIndex].data,
+      //     isMandatory: isMandatoryToggle,
+      //     defaultValue: editingDefaultValue || editingDefaultValueSpin,
+      //     // defaultValue: editingDefaultValueSpin,
+      //   },
+      // };
       updatedTemplate[targetGroupIndex][targetComponentIndex] = {
         ...updatedTemplate[targetGroupIndex][targetComponentIndex],
         name: editingComponentName,
         data: {
           ...updatedTemplate[targetGroupIndex][targetComponentIndex].data,
           isMandatory: isMandatoryToggle,
+
+          defaultValue:
+            inputTypeComponent === "TextField"
+              ? editingDefaultValue
+              : inputTypeComponent === "SpinButton"
+              ? editingDefaultValueSpin
+              : selectedDate,
         },
       };
       setTemplate(updatedTemplate);
@@ -106,6 +180,7 @@ const Template: React.FC = (): JSX.Element => {
 
     setError({ show: false, message: "" });
     setIsPanelOpen(false);
+    setErrorDefaultValueSpin({ show: false, message: "" });
   };
 
   const addTemplate = async (payload: FormElement[][]): Promise<void> => {
@@ -143,8 +218,14 @@ const Template: React.FC = (): JSX.Element => {
         onChange={(formTemplate: FormElement[][]) => {
           setTemplate(formTemplate);
         }}
-        onClick={(name, id, isMandatory) => {
-          handleOpenPanel(name, id, isMandatory);
+        onClick={(
+          name: string,
+          id: string,
+          isMandatory: boolean,
+          defValue: string | undefined,
+          typeInput: string
+        ) => {
+          handleOpenPanel(name, id, isMandatory, defValue, typeInput);
         }}
         templates={template}
       />
@@ -171,6 +252,40 @@ const Template: React.FC = (): JSX.Element => {
           value={editingComponentName}
           onChange={handleComponentNameChange}
         />
+        <div style={{ marginTop: "20px" }}></div>
+
+        {errorDefaultValueSpin.show && (
+          <div style={{ fontSize: "18px", color: "red", textAlign: "center" }}>
+            {errorDefaultValueSpin.message}
+          </div>
+        )}
+
+        {inputTypeComponent === "TextField" && (
+          <TextField
+            label="Input default value if needed"
+            value={editingDefaultValue}
+            onChange={handleComponentDefaultChange}
+          />
+        )}
+
+        {inputTypeComponent === "SpinButton" && (
+          <SpinButton
+            label="Input default value if needed"
+            // value={editingDefaultValue}
+            value={editingDefaultValueSpin}
+            onChange={(__, value) => handleSpinButtonChange(value)}
+          />
+        )}
+
+        {inputTypeComponent === "DatePicker" && (
+          <DatePicker
+            label="Input default value if needed"
+            // value={editingDefaultValue}
+            value={selectedDate}
+            onSelectDate={handleDateChange}
+          />
+        )}
+
         <div style={{ marginTop: "20px" }}></div>
 
         <Toggle

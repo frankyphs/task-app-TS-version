@@ -1,7 +1,7 @@
 
 
 export interface FormValues {
-    [key:number|string]: string|undefined
+    [key:number|string]: string|number|boolean|Date|undefined
 }
 
 export interface TextFieldType {
@@ -38,6 +38,10 @@ export interface DatePickerType{
 }
 
 export type FormElement = TextFieldType | SpinButtonType | DatePickerType;
+export interface DataField {
+    isMandatory:boolean;
+    defaultValue:string;
+}
 
 export interface Task {
     id:number;
