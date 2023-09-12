@@ -19,6 +19,7 @@ const AddFormRevision: React.FC<AddFormProps> = ({
   onSave,
   template,
 }): JSX.Element => {
+  // buat variabel initialValues untuk mengecek input yg memiliki default value
   const initialValues: FormValues = {};
   template.forEach((row) => {
     row.forEach((field) => {
@@ -28,8 +29,9 @@ const AddFormRevision: React.FC<AddFormProps> = ({
     });
   });
 
+  // simpan objek initialize ke dalam state formValues
   const [formValues, setFormValues] = useState<FormValues>(initialValues);
-  // const [formValues, setFormValues] = useState<FormValues>({});
+
   const navigate = useNavigate();
 
   const handleFormChange = (
@@ -42,11 +44,13 @@ const AddFormRevision: React.FC<AddFormProps> = ({
     }));
   };
 
+  // eror ketika ada komponen mandatory yang tidak terisi (dipakai di useEffect dan sebelum submit form)
   const [error, setError] = useState<ErrorMessage>({
     show: false,
     message: "",
   });
 
+  // untuk memvalidasi apakah semua mandatory field sudah terisi, digunakan pada masing2 komponen input form
   const validateMandatoryField = (field: FormElement) => {
     if (field.data?.isMandatory) {
       const isEmpty = !formValues[field.id];
@@ -75,10 +79,12 @@ const AddFormRevision: React.FC<AddFormProps> = ({
   };
 
   useEffect(() => {
-    // console.log(formValues, "Ini form values di awal");
+    // lakukan screening apakah semua mandatory field terisi
     const isAllMandatoryFieldsFilled = template.every((row) =>
+      // Gunakan logika every, jika salah satu saja komponen mandatory yang tidak memiliki default value, maka eror langsung di set ke true
       row.every((field) => {
         if (field.data?.isMandatory) {
+          // semua yang memiliki default value, maka langsung true
           if (formValues[field.id] !== "") {
             return true;
           } else if (field.data.defaultValue !== undefined) {
@@ -86,13 +92,14 @@ const AddFormRevision: React.FC<AddFormProps> = ({
           }
           return false;
         }
-
+        // jika bukan mandatory, maka langsung dianggap true
         return true;
       })
     );
 
     if (isAllMandatoryFieldsFilled) {
       setError({ show: false, message: "" });
+      //jika salah satu saja false, maka eror akan muncul
     } else {
       setError({
         show: true,
@@ -102,7 +109,9 @@ const AddFormRevision: React.FC<AddFormProps> = ({
   }, [formValues, template]);
 
   const handleSubmit = () => {
+    //cek kembali sebelum di submit, jika masih ada mandatory dan kosong, return.
     const isAnyMandatoryFieldEmpty = template.some((row) =>
+      // disini digunakan logika some, ketika ada satu saja mandatory field yang nilainya masih undefined, maka akan mentriger eror
       row.some((field) => field.data?.isMandatory && !formValues[field.id])
     );
 
@@ -165,11 +174,11 @@ const AddFormRevision: React.FC<AddFormProps> = ({
                     {el.type === "TextField" && (
                       <TextField
                         placeholder="Enter text"
-                        value={formValues[el.id]?.toString()}
+                        value={formValues[el.id]?.toString() || ""}
                         onChange={(_, newValue) => {
                           handleFormChange(el.id, newValue);
                         }}
-                        onBlur={() => {
+                        onFocus={() => {
                           validateMandatoryField(el);
                         }}
                         label={el.name}
@@ -183,7 +192,6 @@ const AddFormRevision: React.FC<AddFormProps> = ({
                           handleFormChange(el.id, newValue);
                         }}
                         min={0}
-                        // max={50}
                         onBlur={() => {
                           validateMandatoryField(el);
                         }}

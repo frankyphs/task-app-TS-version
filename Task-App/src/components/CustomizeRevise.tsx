@@ -59,34 +59,34 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
     null
   );
   const [deleteButtonRow, setDeleteButtonRow] = useState<number | null>(null);
-  //handle mouse enter
 
-  const handleMouseEnter = (row: number, index: number) => {
+  // handleMouseEnter
+  const handleMouseEnter = (row: number, index: number): void => {
     setDeleteButtonIndex(index);
     setDeleteButtonRow(row);
     setShowDeleteButton(true);
   };
+
   //handle mouse leave
-  const handleMouseLeave = () => {
+  const handleMouseLeave = (): void => {
     setShowDeleteButton(false);
     setDeleteButtonIndex(null);
     setDeleteButtonIndex(null);
   };
 
-  //buat fungsi onClick untuk callback ke parent
-
+  // fungsi handle click ke parent Template
   const handleClick = (
     name: string,
     id: any,
     isMandatory: boolean,
     defaultValue: string | undefined,
     inputType: string
-  ) => {
+  ): void => {
     onClick(name, id, isMandatory, defaultValue, inputType);
   };
 
   //handle delete component
-  const handleDeleteComponent = (id: string | number) => {
+  const handleDeleteComponent = (id: string | number): void => {
     let targetGroupIndex = -1;
     let targetComponentIndex = -1;
 
@@ -110,7 +110,7 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
     }
   };
 
-  const handleDragandDrops = (results: any) => {
+  const handleDragandDrops = (results: any): void => {
     const { source, destination } = results;
 
     if (!destination) {
@@ -198,7 +198,7 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
       setTemplate(finalArray);
       onChange(finalArray);
     }
-    console.log(template, "Ini Template");
+    // console.log(template, "Ini Template");
   };
 
   return (
@@ -301,12 +301,6 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
                                         >
                                           <div className="nama-form">
                                             <button
-                                              // onClick={() =>
-                                              //   handleOpenPanel(
-                                              //     el.name as string,
-                                              //     el.id
-                                              //   )
-                                              // }
                                               onClick={() =>
                                                 handleClick(
                                                   el.name as string,

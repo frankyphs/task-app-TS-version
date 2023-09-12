@@ -8,6 +8,7 @@ import { FormElement, Task } from "../interface/interface";
 import TaskContext from "../store/task-context";
 
 const baseUrl = "http://localhost:3000";
+
 const Data: React.FC = (): JSX.Element => {
   const navigate = useNavigate();
   const { templates } = useContext(TemplateContext);
@@ -20,7 +21,6 @@ const Data: React.FC = (): JSX.Element => {
       if (response.status !== 200) {
         throw new Error("Error fetching data");
       }
-      // console.log(response, "Ini response");
       const jsonData: Task[] = await response.data;
       dispatchTask({ type: "GET", data: jsonData });
     } catch (err) {

@@ -61,7 +61,6 @@ const Table: React.FC = (): JSX.Element => {
     fetchDataTemplate();
   }, []);
 
-  // logic delete task
   const deleteTask = async (id: number): Promise<void> => {
     try {
       const opt = {
@@ -103,7 +102,6 @@ const Table: React.FC = (): JSX.Element => {
     setIsDeleteModalOpen(false);
   };
 
-  // pakai DetailsList
   const renderDetailsListColumns = () => {
     const columns: IColumn[] = [
       {
@@ -138,7 +136,8 @@ const Table: React.FC = (): JSX.Element => {
               // Memformat nilai hanya jika jenisnya adalah "DatePicker"
               return formattedDate(item[field.id]);
             }
-            // Untuk jenis lain, tampilkan nilai asli
+
+            // Selain date picker maka langsung saja tanpa perlu di format
             return item[field.id];
           },
         }))
