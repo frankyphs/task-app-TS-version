@@ -100,11 +100,9 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
     });
 
     if (targetGroupIndex !== -1 && targetComponentIndex !== -1) {
-      // Salin array template dan hapus komponen yang sesuai
       const updatedTemplate = [...template];
       updatedTemplate[targetGroupIndex].splice(targetComponentIndex, 1);
 
-      // Simpan perubahan ke state template
       const arrayFilter = filterArray(updatedTemplate);
       const hasilArray = modifyArray(arrayFilter);
       setTemplate(hasilArray);

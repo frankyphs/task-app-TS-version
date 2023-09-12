@@ -19,8 +19,6 @@ const AddFormRevision: React.FC<AddFormProps> = ({
   onSave,
   template,
 }): JSX.Element => {
-  //initialize formValue agar langsung bisa baca jika ada default value
-  // const initialValues = {[key: string]: any}={}
   const initialValues: FormValues = {};
   template.forEach((row) => {
     row.forEach((field) => {
@@ -58,14 +56,14 @@ const AddFormRevision: React.FC<AddFormProps> = ({
           show: true,
           message: `Please enter a valid ${field.name || "input"}.`,
         });
+        console.log("ini eror kosong");
       } else {
-        // Periksa jika semua input wajib tidak kosong
         const allMandatoryFieldsFilled = template.every((row) =>
           row.every((rowField) => {
             if (rowField.data?.isMandatory) {
               return formValues[rowField.id] !== "";
             }
-            return true; // Bypass field yang bukan mandatory
+            return true;
           })
         );
 
@@ -86,7 +84,6 @@ const AddFormRevision: React.FC<AddFormProps> = ({
           } else if (field.data.defaultValue !== undefined) {
             return true;
           }
-
           return false;
         }
 
@@ -105,7 +102,6 @@ const AddFormRevision: React.FC<AddFormProps> = ({
   }, [formValues, template]);
 
   const handleSubmit = () => {
-    // Periksa apakah ada input yang wajib diisi kosong
     const isAnyMandatoryFieldEmpty = template.some((row) =>
       row.some((field) => field.data?.isMandatory && !formValues[field.id])
     );
@@ -118,8 +114,8 @@ const AddFormRevision: React.FC<AddFormProps> = ({
       return;
     }
 
-    // Jika semua input wajib diisi sudah terisi, lanjutkan
     onSave(formValues);
+    console.log(formValues, "ini form value");
     navigate("/");
   };
 
@@ -165,52 +161,11 @@ const AddFormRevision: React.FC<AddFormProps> = ({
                         Please enter a valid input{el.name && ` for ${el.name}`}{" "}
                       </div>
                     )}
-                    {/* {el.type === "TextField" && (
-                      <TextField
-                        placeholder="Enter text"
-                        value={formValues[el.id] || ""}
-                        onChange={(_, newValue) => {
-                          const isMandatory = el.data?.isMandatory === true;
-                          const isEmpty = newValue === "";
 
-                          if (isMandatory && isEmpty) {
-                            setError({
-                              show: true,
-                              message: `Please enter a valid ${
-                                el.name || "input"
-                              }.`,
-                            });
-                          } else {
-                            // Periksa jika semua input wajib tidak kosong
-                            const allMandatoryFieldsFilled = template.every(
-                              (row) =>
-                                row.every((field) => {
-                                  if (field.data?.isMandatory) {
-                                    return formValues[field.id] !== "";
-                                  }
-                                  return true; // Bypass field yang bukan mandatory
-                                })
-                            );
-
-                            if (allMandatoryFieldsFilled) {
-                              setError({ show: false, message: "" });
-                            }
-                          }
-
-                          handleFormChange(el.id, newValue);
-                        }}
-                        label={el.name}
-                      />
-                    )} */}
                     {el.type === "TextField" && (
                       <TextField
                         placeholder="Enter text"
-                        // value={formValues[el.id] || ""}
-                        value={
-                          formValues[el.id] !== undefined
-                            ? formValues[el.id]
-                            : el.data?.defaultValue || ""
-                        }
+                        value={formValues[el.id]?.toString()}
                         onChange={(_, newValue) => {
                           handleFormChange(el.id, newValue);
                         }}
@@ -223,15 +178,12 @@ const AddFormRevision: React.FC<AddFormProps> = ({
 
                     {el.type === "SpinButton" && (
                       <SpinButton
-                        // value={formValues[el.id] || ""}
-                        value={
-                          formValues[el.id] !== undefined
-                            ? formValues[el.id]
-                            : el.data?.defaultValue || 0
-                        }
+                        value={formValues[el.id]?.toString()}
                         onChange={(_, newValue) => {
                           handleFormChange(el.id, newValue);
                         }}
+                        min={0}
+                        // max={50}
                         onBlur={() => {
                           validateMandatoryField(el);
                         }}
