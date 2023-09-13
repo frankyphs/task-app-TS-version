@@ -133,11 +133,11 @@ const Table: React.FC = (): JSX.Element => {
           },
           onRender: (item: any) => {
             if (field.type === "DatePicker") {
-              // Memformat nilai hanya jika jenisnya adalah "DatePicker"
+              // Formatted value only if filed type is DatePicker
               return formattedDate(item[field.id]);
             }
 
-            // Selain date picker maka langsung saja tanpa perlu di format
+            // Beside DatePicker, no need to format
             return item[field.id];
           },
         }))
@@ -171,7 +171,7 @@ const Table: React.FC = (): JSX.Element => {
     <>
       <h1>List of My Tasks</h1>
       {/* {JSON.stringify(tasks)} */}
-      {JSON.stringify(templates)}
+      {/* {JSON.stringify(templates)} */}
       <div className="table-container">
         {deletingTask !== null && (
           <Dialog

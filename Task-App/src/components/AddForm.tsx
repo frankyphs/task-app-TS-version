@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import {
@@ -19,7 +19,7 @@ const AddFormRevision: React.FC<AddFormProps> = ({
   onSave,
   template,
 }): JSX.Element => {
-  // buat variabel initialValues untuk mengecek input yg memiliki default value
+  // make initialValus to fullfilled the form directly when the form is rendered
   const initialValues: FormValues = {};
   template.forEach((row) => {
     row.forEach((field) => {
@@ -29,7 +29,7 @@ const AddFormRevision: React.FC<AddFormProps> = ({
     });
   });
 
-  // simpan objek initialize ke dalam state formValues
+  // save object of initialValues to state formValues
   const [formValues, setFormValues] = useState<FormValues>(initialValues);
 
   const navigate = useNavigate();
@@ -44,77 +44,40 @@ const AddFormRevision: React.FC<AddFormProps> = ({
     }));
   };
 
-  // eror ketika ada komponen mandatory yang tidak terisi (dipakai di useEffect dan sebelum submit form)
+  // test validate the spin button
+  const handleValidate = (inputValue: string): string | void => {
+    const numberValue = parseInt(inputValue, 10);
+    if (numberValue % 2 === 0) {
+      return inputValue;
+    } else {
+      return void 0;
+    }
+  };
+
+  // error occured while mandatory form is not fullfilled before submit
   const [error, setError] = useState<ErrorMessage>({
     show: false,
     message: "",
   });
 
-  // untuk memvalidasi apakah semua mandatory field sudah terisi, digunakan pada masing2 komponen input form
-  const validateMandatoryField = (field: FormElement) => {
-    if (field.data?.isMandatory) {
-      const isEmpty = !formValues[field.id];
-
-      if (isEmpty) {
-        setError({
-          show: true,
-          message: `Please enter a valid ${field.name || "input"}.`,
-        });
-        console.log("ini eror kosong");
-      } else {
-        const allMandatoryFieldsFilled = template.every((row) =>
-          row.every((rowField) => {
-            if (rowField.data?.isMandatory) {
-              return formValues[rowField.id] !== "";
-            }
-            return true;
-          })
-        );
-
-        if (allMandatoryFieldsFilled) {
-          setError({ show: false, message: "" });
-        }
-      }
+  // error function only for TextField getErrorMessage
+  const getErrorMessage = (value: string, isInputMandatory: boolean) => {
+    if (isInputMandatory) {
+      return value?.trim().length > 0
+        ? ""
+        : "Mandatory input must be fullfilled";
     }
+    return;
   };
 
-  useEffect(() => {
-    // lakukan screening apakah semua mandatory field terisi
-    const isAllMandatoryFieldsFilled = template.every((row) =>
-      // Gunakan logika every, jika salah satu saja komponen mandatory yang tidak memiliki default value, maka eror langsung di set ke true
-      row.every((field) => {
-        if (field.data?.isMandatory) {
-          // semua yang memiliki default value, maka langsung true
-          if (formValues[field.id] !== "") {
-            return true;
-          } else if (field.data.defaultValue !== undefined) {
-            return true;
-          }
-          return false;
-        }
-        // jika bukan mandatory, maka langsung dianggap true
-        return true;
-      })
-    );
-
-    if (isAllMandatoryFieldsFilled) {
-      setError({ show: false, message: "" });
-      //jika salah satu saja false, maka eror akan muncul
-    } else {
-      setError({
-        show: true,
-        message: "Please enter input for all mandatory components.",
-      });
-    }
-  }, [formValues, template]);
-
   const handleSubmit = () => {
-    //cek kembali sebelum di submit, jika masih ada mandatory dan kosong, return.
+    // do check again before submitting, if there any empty mandatory field,
     const isAnyMandatoryFieldEmpty = template.some((row) =>
-      // disini digunakan logika some, ketika ada satu saja mandatory field yang nilainya masih undefined, maka akan mentriger eror
+      // here i use "some" logic, which is if any just one is true (empty), isAnyMandatoryFieldEmpty automatically be true
       row.some((field) => field.data?.isMandatory && !formValues[field.id])
     );
 
+    // show error while isAnyMandatoryField true
     if (isAnyMandatoryFieldEmpty) {
       setError({
         show: true,
@@ -124,13 +87,11 @@ const AddFormRevision: React.FC<AddFormProps> = ({
     }
 
     onSave(formValues);
-    console.log(formValues, "ini form value");
     navigate("/");
   };
 
   return (
     <>
-      {JSON.stringify(template)}
       <div className="add-form-container">
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <h3>Add Tasks Form</h3>
@@ -159,17 +120,20 @@ const AddFormRevision: React.FC<AddFormProps> = ({
               <div key={rowIndex} className="div-baris">
                 {row.map((el) => (
                   <div key={el.id} className="div-kolom">
-                    {formValues[el.id] === "" && el.data?.isMandatory && (
-                      <div
-                        style={{
-                          fontSize: "18px",
-                          color: "red",
-                          textAlign: "center",
-                        }}
-                      >
-                        Please enter a valid input{el.name && ` for ${el.name}`}{" "}
-                      </div>
-                    )}
+                    {formValues[el.id] === "" &&
+                      el.data?.isMandatory &&
+                      el.type === "SpinButton" && (
+                        <div
+                          style={{
+                            fontSize: "18px",
+                            color: "red",
+                            textAlign: "center",
+                          }}
+                        >
+                          Please enter a valid input
+                          {el.name && ` for ${el.name}`}{" "}
+                        </div>
+                      )}
 
                     {el.type === "TextField" && (
                       <TextField
@@ -178,10 +142,13 @@ const AddFormRevision: React.FC<AddFormProps> = ({
                         onChange={(_, newValue) => {
                           handleFormChange(el.id, newValue);
                         }}
-                        onFocus={() => {
-                          validateMandatoryField(el);
-                        }}
                         label={el.name}
+                        onGetErrorMessage={(value: string) =>
+                          getErrorMessage(
+                            value,
+                            el.data?.isMandatory as boolean
+                          )
+                        }
                       />
                     )}
 
@@ -192,9 +159,6 @@ const AddFormRevision: React.FC<AddFormProps> = ({
                           handleFormChange(el.id, newValue);
                         }}
                         min={0}
-                        onBlur={() => {
-                          validateMandatoryField(el);
-                        }}
                         styles={{
                           arrowButtonsContainer: {
                             display: "flex",
@@ -203,8 +167,10 @@ const AddFormRevision: React.FC<AddFormProps> = ({
                           },
                         }}
                         label={el.name}
+                        onValidate={(value) => handleValidate(value)}
                       />
                     )}
+
                     {el.type === "DatePicker" && (
                       <DatePicker
                         value={
@@ -215,11 +181,9 @@ const AddFormRevision: React.FC<AddFormProps> = ({
                         onSelectDate={(date) => {
                           handleFormChange(el.id, date?.toISOString());
                         }}
-                        onBlur={() => {
-                          validateMandatoryField(el);
-                        }}
                         placeholder="Enter Date"
                         label={el.name}
+                        isRequired={el.data?.isMandatory}
                       />
                     )}
                   </div>

@@ -4,12 +4,7 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
-import {
-  TextField,
-  DatePicker,
-  SpinButton,
-  // Panel,
-} from "@fluentui/react";
+import { TextField, DatePicker, SpinButton } from "@fluentui/react";
 
 import { FormElement } from "../interface/interface";
 import { filterArray, modifyArray } from "../helper/helper";
@@ -52,8 +47,6 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
     setTemplate(modifyArray(templates));
   }, []);
 
-  //balikin lagi semua props dari parent
-
   const [showDeleteButton, setShowDeleteButton] = useState<boolean>(false);
   const [deleteButtonIndex, setDeleteButtonIndex] = useState<number | null>(
     null
@@ -67,14 +60,14 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
     setShowDeleteButton(true);
   };
 
-  //handle mouse leave
+  // handleMouse leave
   const handleMouseLeave = (): void => {
     setShowDeleteButton(false);
     setDeleteButtonIndex(null);
     setDeleteButtonIndex(null);
   };
 
-  // fungsi handle click ke parent Template
+  // handleClick code to parent "Template.tsx"
   const handleClick = (
     name: string,
     id: any,
@@ -117,14 +110,14 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
       return;
     }
 
-    // ini logic ketika tidak terjadi perubahan apapun
+    // logic code if there is no changing
     if (
       source.droppableId === destination.droppableId &&
       source.index === destination.index
     )
       return;
 
-    // ini logic untuk pemindahan komponen pada baris / row yang sama / droppableId yg sama
+    // logic code for moving component on same droppableId
     if (source.droppableId === destination.droppableId) {
       // logic untuk pindah antar 3 komponen utama (tapi udah saya bikin isDropDisabled true)
       if (source.droppableId !== "group") {
@@ -151,12 +144,11 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
       }
     }
 
-    // ini logic untuk penambahan komponen pada form area
+    // logic code for adding component on form area
     if (
       source.droppableId === "component" &&
       destination.droppableId !== "group"
     ) {
-      // setShowDialog(true);
       const newTemplate = [...template];
       const reorderedComponents = [...custom];
       const arrayDropId = destination.droppableId;
@@ -180,7 +172,7 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
       onChange(finalArray);
     }
 
-    // ini logic untuk pemindahan komponen antar baris row
+    // logic code for moving component inter-row
     if (
       source.droppableId !== destination.droppableId &&
       source.droppableId !== "component"
@@ -198,7 +190,6 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
       setTemplate(finalArray);
       onChange(finalArray);
     }
-    // console.log(template, "Ini Template");
   };
 
   return (

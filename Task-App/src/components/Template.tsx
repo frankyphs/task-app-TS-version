@@ -41,14 +41,14 @@ const Template: React.FC = (): JSX.Element => {
   const [isMandatoryToggle, setIsMandatoryToggle] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
-  // buat handle pas edit nama komponen
+  // code for edit component's name
   const handleComponentNameChange = (
     e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setEditingComponentName(e.currentTarget.value);
   };
 
-  // ini untuk edit default value
+  // code for edit default value
   // text-field
   const handleComponentDefaultChange = (
     e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -66,9 +66,13 @@ const Template: React.FC = (): JSX.Element => {
     setSelectedDate(date || undefined);
   };
 
-  //kode buat buka panel
+  // this code for options on dropdown
+  // const [option, setOption] = useState([]);
+  // const [inputTextOption, setInputTextOption] = useState("");
+
+  // code for open panel
   const handleOpenPanel = (
-    //butuh info input type dan isMandatory untuk menyesuaikan isi panel
+    // need input type and isMandatory to adjust the contents of panel
     nameComponent: string,
     idComponent: string,
     isMandatory: boolean,
@@ -81,7 +85,7 @@ const Template: React.FC = (): JSX.Element => {
     setIsMandatoryToggle(isMandatory);
     setInputTypeComponent(inputType);
 
-    // set semua state default value menjadi defValue agar panel bisa terisi
+    // set all default value state to be defValue so that the panel can be filled
     setEditingDefaultValue(defValue);
     setEditingDefaultValueSpin(defValue);
     setSelectedDate(defValue ? new Date(defValue) : undefined);
@@ -96,7 +100,7 @@ const Template: React.FC = (): JSX.Element => {
 
   //kode buat save edit panel
   const handlePanelSave = () => {
-    // disini kita cek hanya nama komponen tidak boleh kosong, default value kosong tidak masalah
+    // here i just do check the component's name is not allowed to be empty, default value empty is not problem
     if (editingComponentName.trim() === "") {
       setError({ show: true, message: "Please enter a valid name." });
       return;
@@ -105,7 +109,7 @@ const Template: React.FC = (): JSX.Element => {
     let targetGroupIndex = -1;
     let targetComponentIndex = -1;
 
-    // kita cari terlebih dahulu indeks komponen yang kita edit
+    // i search first index value of component that i'll be edited
     template.forEach((group, groupIndex) => {
       group.forEach((component, componentIndex) => {
         if (component.id == editingComponentID) {
@@ -123,7 +127,7 @@ const Template: React.FC = (): JSX.Element => {
         data: {
           ...updatedTemplate[targetGroupIndex][targetComponentIndex].data,
           isMandatory: isMandatoryToggle,
-          // kita cek type komponen dan akan memperbaharui state default value sesuai type componentnya
+          // i updated state of  defaultValue correspond as component's type
           defaultValue: (() => {
             if (inputTypeComponent === "TextField") {
               return editingDefaultValue;
@@ -133,20 +137,6 @@ const Template: React.FC = (): JSX.Element => {
               return selectedDate;
             }
           })(),
-          // defaultValue:
-          //   inputTypeComponent === "TextField"
-          //     ? editingDefaultValue
-          //     : inputTypeComponent === "SpinButton"
-          //     ? editingDefaultValueSpin
-          //     : selectedDate,
-
-          // if(inputTypeComponent==="TextField"){
-          //   defaultValue:editingDefaultValue
-          // }else if(inputTypeComponent==="SpinButton"){
-          //   defaultValue:editingDefaultValueSpin
-          // }else{
-          //   defaultValue:selectedDate
-          // }
         },
       };
       setTemplate(updatedTemplate);
@@ -180,7 +170,7 @@ const Template: React.FC = (): JSX.Element => {
 
   const handleSubmit = () => {
     console.log(template, "ini template sebelum di filter");
-    // filter terlebih dahulu untuk menghilangkan array kosong
+    // filter first to eliminate empty array
     const arrayBaru = filterArray(template);
     addTemplate(arrayBaru);
     navigate("/add-task");
@@ -189,11 +179,11 @@ const Template: React.FC = (): JSX.Element => {
   return (
     <div>
       <CustomizeRevise
-        // onChange akan menerima template form dari child, kemudian akan menjalankan fungsi setter. State template yang baru akan dikirimkan kembali ke child
+        // onChange will receive form template from child, and then execute stter function. New updated state template will be sent back to child
         onChange={(formTemplate: FormElement[][]) => {
           setTemplate(formTemplate);
         }}
-        // onClick menerima semua parameter yang dibutuhkan unruk edit nama dan default value
+        // onClick receive all of needed parameter for editing name and default value
         onClick={(
           name: string,
           id: string,
@@ -203,7 +193,7 @@ const Template: React.FC = (): JSX.Element => {
         ) => {
           handleOpenPanel(name, id, isMandatory, defValue, typeInput);
         }}
-        // state template yang diperbarui akan dikirimkan kembali ke child
+        // updated state template wii be send back to child
         templates={template}
       />
 
@@ -220,14 +210,14 @@ const Template: React.FC = (): JSX.Element => {
         onDismiss={() => setIsPanelOpen(false)}
         headerText="Edit Component"
       >
-        {/* nampilin eror ketika nama komponen berupa string kosong */}
+        {/* display eror while component's name is empty string*/}
         {error.show && (
           <div style={{ fontSize: "18px", color: "red", textAlign: "center" }}>
             {error.message}
           </div>
         )}
 
-        {/* Ini bagian edit nama komponen */}
+        {/* code for editing component's name */}
         <TextField
           label="Component Name"
           value={editingComponentName}
@@ -235,7 +225,7 @@ const Template: React.FC = (): JSX.Element => {
         />
         <div style={{ marginTop: "20px" }}></div>
 
-        {/* ini bagian edit default value */}
+        {/* code for editing default value */}
         {inputTypeComponent === "TextField" && (
           <TextField
             label="Input default value if needed"
@@ -249,6 +239,8 @@ const Template: React.FC = (): JSX.Element => {
             label="Input default value if needed"
             value={editingDefaultValueSpin}
             onChange={(__, value) => handleSpinButtonChange(value)}
+            min={0}
+            defaultValue={undefined}
           />
         )}
 

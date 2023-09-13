@@ -34,12 +34,12 @@ export interface DatePickerType{
     name?:string;
     class?:string;
     data?:{
-        isMandatory?:boolean,
+        isMandatory?:boolean;
         defaultValue?:string|boolean|number|Date
     }
 }
 
-export type FormElement = TextFieldType | SpinButtonType | DatePickerType;
+export type FormElement = TextFieldType | SpinButtonType | DatePickerType ;
 
 
 export interface Task {
