@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import {
@@ -19,19 +19,22 @@ const AddFormRevision: React.FC<AddFormProps> = ({
   onSave,
   template,
 }): JSX.Element => {
-  // make initialValus to fullfilled the form directly when the form is rendered
-  const initialValues: FormValues = {};
-  template.forEach((row) => {
-    row.forEach((field) => {
-      if (field.data?.defaultValue !== undefined) {
-        initialValues[field.id] = field.data.defaultValue;
-      }
+  // use useEffect and new varibale, initialValues to fullfilled the form directly when its has defaultValue
+  useEffect(() => {
+    const initialValues: FormValues = {};
+    template.forEach((row) => {
+      console.log("here");
+      row.forEach((field) => {
+        if (field.data?.defaultValue !== undefined) {
+          initialValues[field.id] = field.data.defaultValue;
+        }
+      });
     });
-  });
+    // set initialValue as formVlues
+    setFormValues(initialValues);
+  }, [template]);
 
-  // save object of initialValues to state formValues
-  const [formValues, setFormValues] = useState<FormValues>(initialValues);
-
+  const [formValues, setFormValues] = useState<FormValues>({});
   const navigate = useNavigate();
 
   const handleFormChange = (
@@ -91,7 +94,7 @@ const AddFormRevision: React.FC<AddFormProps> = ({
   };
 
   return (
-    <>
+    <React.Fragment>
       <div className="add-form-container">
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <h3>Add Tasks Form</h3>
@@ -199,7 +202,7 @@ const AddFormRevision: React.FC<AddFormProps> = ({
           Submit
         </PrimaryButton>
       </div>
-    </>
+    </React.Fragment>
   );
 };
 

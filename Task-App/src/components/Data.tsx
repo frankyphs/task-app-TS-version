@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import TemplateContext from "../store/template-context";
 import axios, { AxiosResponse } from "axios";
 import { FormElement, Task } from "../interface/interface";
-import TaskContext from "../store/task-context";
+// import TaskContext from "../store/task-context";
 
 const baseUrl = "http://localhost:3000";
 
@@ -13,20 +13,20 @@ const Data: React.FC = (): JSX.Element => {
   const navigate = useNavigate();
   const { templates } = useContext(TemplateContext);
   const { dispatchTemplate } = useContext(TemplateContext);
-  const { dispatchTask } = useContext(TaskContext);
+  // const { dispatchTask } = useContext(TaskContext);
 
-  const fetchDataTask = async (): Promise<void> => {
-    try {
-      const response: AxiosResponse<Task[]> = await axios(`${baseUrl}/tasks`);
-      if (response.status !== 200) {
-        throw new Error("Error fetching data");
-      }
-      const jsonData: Task[] = await response.data;
-      dispatchTask({ type: "GET", data: jsonData });
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  // const fetchDataTask = async (): Promise<void> => {
+  //   try {
+  //     const response: AxiosResponse<Task[]> = await axios(`${baseUrl}/tasks`);
+  //     if (response.status !== 200) {
+  //       throw new Error("Error fetching data");
+  //     }
+  //     const jsonData: Task[] = await response.data;
+  //     dispatchTask({ type: "GET", data: jsonData });
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   const fetchDataTemplate = async (): Promise<void> => {
     try {
@@ -67,7 +67,7 @@ const Data: React.FC = (): JSX.Element => {
 
   useEffect(() => {
     fetchDataTemplate();
-    fetchDataTask();
+    // fetchDataTask();
   }, []);
 
   return (

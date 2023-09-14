@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import CustomizeRevise from "./CustomizeRevise";
 import TemplateContext from "../store/template-context";
@@ -146,6 +146,13 @@ const Template: React.FC = (): JSX.Element => {
     setIsPanelOpen(false);
   };
 
+  // footer content panel
+  const onRenderFooterContent = () => (
+    <div>
+      <PrimaryButton text="Save" onClick={handlePanelSave} />
+    </div>
+  );
+
   const addTemplate = async (payload: FormElement[][]): Promise<void> => {
     try {
       const opt = {
@@ -209,6 +216,8 @@ const Template: React.FC = (): JSX.Element => {
         isOpen={isPanelOpen}
         onDismiss={() => setIsPanelOpen(false)}
         headerText="Edit Component"
+        onRenderFooterContent={onRenderFooterContent}
+        isFooterAtBottom={true}
       >
         {/* display eror while component's name is empty string*/}
         {error.show && (
@@ -219,7 +228,7 @@ const Template: React.FC = (): JSX.Element => {
 
         {/* code for editing component's name */}
         <TextField
-          label="Component Name"
+          label="Name"
           value={editingComponentName}
           onChange={handleComponentNameChange}
         />
@@ -228,7 +237,7 @@ const Template: React.FC = (): JSX.Element => {
         {/* code for editing default value */}
         {inputTypeComponent === "TextField" && (
           <TextField
-            label="Input default value if needed"
+            label="Default value"
             value={editingDefaultValue}
             onChange={handleComponentDefaultChange}
           />
@@ -236,7 +245,7 @@ const Template: React.FC = (): JSX.Element => {
 
         {inputTypeComponent === "SpinButton" && (
           <SpinButton
-            label="Input default value if needed"
+            label="Default value"
             value={editingDefaultValueSpin}
             onChange={(__, value) => handleSpinButtonChange(value)}
             min={0}
@@ -246,7 +255,7 @@ const Template: React.FC = (): JSX.Element => {
 
         {inputTypeComponent === "DatePicker" && (
           <DatePicker
-            label="Input default value if needed"
+            label="Default value"
             value={selectedDate}
             onSelectDate={handleDateChange}
           />
@@ -255,13 +264,14 @@ const Template: React.FC = (): JSX.Element => {
         <div style={{ marginTop: "20px" }}></div>
 
         <Toggle
-          label="Is Mandatory Field ?"
+          label="Mandatory Component ?"
           onText="Yes"
           offText="No"
           checked={isMandatoryToggle}
           onChange={handleToggleChange}
         />
-        <PrimaryButton text="Save" onClick={handlePanelSave} />
+
+        {/* <PrimaryButton text="Save" onClick={handlePanelSave} /> */}
       </Panel>
     </div>
   );

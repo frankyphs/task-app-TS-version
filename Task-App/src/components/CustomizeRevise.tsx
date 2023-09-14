@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 import { TextField, DatePicker, SpinButton } from "@fluentui/react";
-
+import { IconButton, IIconProps } from "@fluentui/react";
 import { FormElement } from "../interface/interface";
 import { filterArray, modifyArray } from "../helper/helper";
 
@@ -41,7 +41,7 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
 
   const [custom, setCustom] = useState<Component[]>(COMPONENT);
 
-  useState(false);
+  const emojiIcon: IIconProps = { iconName: "Trash" };
 
   useEffect(() => {
     setTemplate(modifyArray(templates));
@@ -312,7 +312,17 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
                                               deleteButtonIndex === colIndex &&
                                               deleteButtonRow === rowIndex && (
                                                 <div>
-                                                  <button
+                                                  <IconButton
+                                                    iconProps={emojiIcon}
+                                                    title="Emoji"
+                                                    onClick={() =>
+                                                      handleDeleteComponent(
+                                                        el.id
+                                                      )
+                                                    }
+                                                    className="tombol-delete"
+                                                  />
+                                                  {/* <button
                                                     onClick={() =>
                                                       handleDeleteComponent(
                                                         el.id
@@ -321,7 +331,7 @@ const CustomizeRevise: React.FC<AddTemplateProps> = ({
                                                     className="tombol-delete"
                                                   >
                                                     <i className="fas fa-trash"></i>
-                                                  </button>
+                                                  </button> */}
                                                 </div>
                                               )}
                                           </div>

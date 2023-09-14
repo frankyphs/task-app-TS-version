@@ -109,19 +109,23 @@ td button{
 .button-delete .button-edit{
   width:100px;
   height: 100px;
-  /* margin: 0 100px; */
+
 }
-.fas{
-  margin: 10px 10px;
-}
+/* .fas{
+  background-color: #ffffff;
+} */
 .ms-Toggle-innerContainer{
   display: flex;
   align-items: center;
 }
 
+/* .logo-trash{
+  width:30px;
+  height: 30px;
+} */
 .button-delete:hover{
   background-color: red;
-  border: none;
+  /* border: none; */
 }
 .button-edit:hover{
   background-color: #5F7D8E;
@@ -270,7 +274,7 @@ button {
 .draggable-item-secondary {
   width: 100%;
   background-color: #FFF;
-  margin: 10px 0px;
+  margin: 10px 10px;
   cursor: move;
  
   border: 1px dashed #ccc;
@@ -411,9 +415,9 @@ background-color:  #DDE6ED; */
 
 .tombol-edit{
   text-decoration: none;
-  margin: 3px 5px;
+  margin: 3px 6px;
   border: none;
-  padding: 2px 3px;
+  padding: 7px 3px;
   border-radius: 3px;
   font-size: 15px;
 }
@@ -434,6 +438,13 @@ color: #fff;
   /* display: none; */
 }
 
+.fieldGroup-206{
+  margin:0 7px;
+}
+
+.spinButtonWrapper-212{
+  margin:0 7px;
+}
 
 /* .kepala-tabel{
   font-size: 30px;

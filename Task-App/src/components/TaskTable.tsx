@@ -16,6 +16,8 @@ import {
   DetailsList,
   DetailsListLayoutMode,
   IColumn,
+  IconButton,
+  IIconProps,
 } from "@fluentui/react";
 
 import { Task } from "../interface/interface";
@@ -84,6 +86,7 @@ const Table: React.FC = (): JSX.Element => {
   const [deletingTask, setDeletingTask] = useState<Task | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
+  const emojiIcon: IIconProps = { iconName: "Trash" };
   const handleDeleteClick = (task: any) => {
     setDeletingTask(task);
     setIsDeleteModalOpen(true);
@@ -153,13 +156,18 @@ const Table: React.FC = (): JSX.Element => {
         },
         onRender: (item) => (
           <>
-            <button
+            {/* <button
               onClick={() => handleDeleteClick(item)}
               className="button-delete"
               title="Delete"
             >
               <i className="fas fa-trash-alt"></i>
-            </button>
+            </button> */}
+            <IconButton
+              iconProps={emojiIcon}
+              title="Emoji"
+              onClick={() => handleDeleteClick(item)}
+            />
           </>
         ),
       },
